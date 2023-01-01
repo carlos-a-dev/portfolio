@@ -20,8 +20,7 @@ class Level1 extends Scene {
     this.flip = false
 
     const map = this.make.tilemap({ key: 'level1' })
-    map.addTilesetImage('player')
-    map.addTilesetImage('plains')
+    // map.addTilesetImage('plains')
     map.addTilesetImage('grass')
     map.addTilesetImage('water1')
     map.addTilesetImage('objects')
