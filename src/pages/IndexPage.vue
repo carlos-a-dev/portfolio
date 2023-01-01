@@ -6,29 +6,33 @@
 <script setup>
 import { onMounted } from 'vue'
 import Phaser from 'phaser'
-import Boot from 'src/game/boot'
-import Preload from 'src/game/preload'
-import Game from 'src/game/game'
+import Level1 from 'src/game/level1'
 
 onMounted(() => {
-  const zoom = 4
+  const gameScale = 4
+
+  /** @config Phaser.Types.Core.GameConfig */
   const config = {
     type: Phaser.AUTO,
-    width: (document.getElementById('game').clientWidth / zoom) * 0.98,
-    height: (document.getElementById('game').clientHeight / zoom) * 0.98,
+    width: (document.getElementById('game').clientWidth / gameScale) * 0.99,
+    height: (document.getElementById('game').clientHeight / gameScale) * 0.99,
     backgroundColor: '#2d2d2d',
     parent: 'game',
+    physics: {
+      default: 'arcade',
+      arcade: {
+        debug: true
+      }
+    },
     scale: {
-      zoom
-    }
+      zoom: gameScale
+    },
+    scene: [
+      Level1
+    ]
   }
 
-  const PortfolioGame = {}
-  PortfolioGame.game = new Phaser.Game(config)
-  PortfolioGame.game.scene.add('Boot', Boot)
-  PortfolioGame.game.scene.add('Preload', Preload)
-  PortfolioGame.game.scene.add('Game', Game)
-
-  PortfolioGame.game.scene.start('Boot')
+  const game = new Phaser.Game(config)
+  game.scene.start('Level1')
 })
 </script>
