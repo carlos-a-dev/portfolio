@@ -2,26 +2,16 @@ import Phaser from 'phaser'
 
 export default class Chest extends Phaser.GameObjects.Sprite {
   /**
-   *
    * @param {Phaser.Scene} scene
    * @param {int} x
    * @param {int} y
-   * @param {string | null} key
+   * @param {string} texture
+   * @param {int} frame
    */
-  constructor (scene, x, y, key, type = 'silver') {
-    super(scene, x, y, key)
-
-    this.type = type
-
-    this.setTexture('chest-' + this.type, 0)
+  constructor (scene, x, y, texture = 'chest-silver', frame = 0) {
+    super(scene, x, y, texture, frame)
     scene.add.existing(this)
-
     this._generateAnimations(8)
-
-    scene.input.keyboard.on('keydown-C', () => {
-      this.play('open', true)
-      setTimeout(() => { this.playReverse('open', true) }, 1000)
-    })
   }
 
   /**
@@ -39,14 +29,18 @@ export default class Chest extends Phaser.GameObjects.Sprite {
   }
 
   open () {
-    this.play('open')
+    this.play('open', true)
+  }
+
+  close () {
+    this.playReverse('open', true)
   }
 
   /**
    * @param {int} frameRate
    */
   _generateAnimations (frameRate = 8) {
-    this._createAnimation('open', 'chest-' + this.type, 0, 3, frameRate)
+    this._createAnimation('open', this.texture.key, 0, 3, frameRate)
   }
 
   _createAnimation (key, spritesheet, startFrame, endFrame, frameRate = 8, repeat = 0, sprite = this) {
