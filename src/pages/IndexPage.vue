@@ -5,34 +5,8 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import Phaser from 'phaser'
-import Level1 from 'src/game/level1'
-
+import Game from 'src/game/main'
 onMounted(() => {
-  const gameScale = 4
-
-  /** @config Phaser.Types.Core.GameConfig */
-  const config = {
-    type: Phaser.AUTO,
-    width: (document.getElementById('game').clientWidth / gameScale) * 0.99,
-    height: (document.getElementById('game').clientHeight / gameScale) * 0.99,
-    backgroundColor: '#2d2d2d',
-    parent: 'game',
-    physics: {
-      default: 'arcade',
-      arcade: {
-        debug: true
-      }
-    },
-    scale: {
-      zoom: gameScale
-    },
-    scene: [
-      Level1
-    ]
-  }
-
-  const game = new Phaser.Game(config)
-  game.scene.start('Level1')
+  Game.init('game', 4)
 })
 </script>
