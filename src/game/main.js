@@ -1,22 +1,20 @@
 import Phaser from 'phaser'
 import Level1 from 'src/game/level1'
 
-function init (containerId, gameScale = 4) {
+function init (containerId) {
   /** @config Phaser.Types.Core.GameConfig */
+  const container = document.getElementById(containerId)
   const config = {
     type: Phaser.AUTO,
-    width: (document.getElementById(containerId).clientWidth / gameScale) * 0.99,
-    height: (document.getElementById(containerId).clientHeight / gameScale) * 0.99,
-    backgroundColor: '#2d2d2d',
+    width: container.clientWidth,
+    height: container.clientHeight,
     parent: containerId,
+    pixelArt: true,
     physics: {
       default: 'arcade',
       arcade: {
         debug: true
       }
-    },
-    scale: {
-      zoom: gameScale
     },
     scene: [
       Level1

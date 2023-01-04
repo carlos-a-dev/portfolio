@@ -27,20 +27,26 @@ class Level1 extends Scene {
     map.addTilesetImage('grass')
     map.addTilesetImage('water')
     map.addTilesetImage('objects')
-    map.createLayer('water', ['water'])
-    map.createLayer('island', ['grass', 'water'])
-    map.createLayer('trees', ['objects'])
+    map.createLayer('water', ['water']).setPipeline('Light2D')
+    map.createLayer('island', ['grass', 'water']).setPipeline('Light2D')
+    map.createLayer('trees', ['objects']).setPipeline('Light2D')
     this.sys.animatedTiles.init(map)
 
     this.chest = new Chest(this, 200, 150)
     this.player = new Player(this, map.widthInPixels / 2, map.heightInPixels / 2)
+    this.player.setPipeline('Light2D')
+
+    this.myLight = this.lights.addLight(0, 0, 70)
+    this.lights.enable().setAmbientColor(0x777777)
 
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
-    this.cameras.main.startFollow(this.player)
+    this.cameras.main.startFollow(this.player, true)
+    this.cameras.main.setZoom(4)
   }
 
   update () {
     this.player.update(this.cursors)
+    this.myLight.setPosition(this.player.x, this.player.y)
   }
 }
 

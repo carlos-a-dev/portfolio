@@ -1,20 +1,36 @@
 import Phaser from 'phaser'
+import AnimatedParticle from 'src/game/particles/AnimatedParticle'
 
-export default class Player extends Phaser.GameObjects.Sprite {
+export default class Player extends Phaser.Physics.Arcade.Sprite {
+  /**
+   *
+   * @param {Phaser.Scene} scene
+   * @param {int} x
+   * @param {int} y
+   * @param {string} texture
+   * @param {int} frame
+   */
   constructor (scene, x, y, texture = 'player', frame = 0) {
     super(scene, x, y, texture, frame)
 
-    this.dust1 = new Phaser.GameObjects.Sprite(scene, 0, 0)
-    this.dust2 = new Phaser.GameObjects.Sprite(scene, 0, 0)
-    scene.add.existing(this.dust1)
-    scene.add.existing(this.dust2)
+    this._generateAnimations(8)
+
+    this.dust = scene.add.particles('dust').createEmitter({
+      on: false,
+      frequency: 100,
+      lifespan: 150,
+      follow: this,
+      followOffset: new Phaser.Math.Vector2(0, 16),
+      particleClass: AnimatedParticle
+    })
+    this.dust.animation = this.anims.get('dustin')
 
     scene.add.existing(this)
+    scene.physics.add.existing(this)
 
     this.lastDirection = 'down'
     this.alive = true
 
-    this._generateAnimations(8)
     this.idle()
 
     scene.input.keyboard.on('keydown-SPACE', () => {
@@ -22,16 +38,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
     })
 
     scene.input.keyboard.on('keydown-A', () => {
-      if (this.alive) {
-        this.alive = false
-        this.play('die')
-      }
+      this.die()
     })
     scene.input.keyboard.on('keydown-S', () => {
-      if (!this.alive) {
-        this.alive = true
-        this.play('revive')
-      }
+      this.revive()
     })
   }
 
@@ -56,36 +66,50 @@ export default class Player extends Phaser.GameObjects.Sprite {
     if (!this.alive) {
       return
     }
+    this.setVelocity(0, 0)
     if (this.anims.isPlaying && this.anims.currentAnim.key.startsWith('slash-')) {
       return
     }
 
     let walking = false
+    let velocityX = 0
+    let velocityY = 0
 
     if (cursors.up.isDown) {
-      this.setY(this.y - 1)
+      velocityY -= 1
       this.lastDirection = 'up'
       walking = true
     } else if (cursors.down.isDown) {
-      this.setY(this.y + 1)
+      velocityY += 1
       this.lastDirection = 'down'
       walking = true
     }
     if (cursors.left.isDown) {
       this.setFlipX(true)
-      this.setX(this.x - 1)
+      velocityX -= 1
       this.lastDirection = 'left'
       walking = true
     } else if (cursors.right.isDown) {
       this.setFlipX(false)
-      this.setX(this.x + 1)
+      velocityX += 1
       this.lastDirection = 'right'
       walking = true
     }
 
+    if (velocityY && velocityX) {
+      velocityX *= 0.6
+      velocityY *= 0.6
+    }
+
+    this.setVelocity(velocityX * 100, velocityY * 100)
+
     if (walking) {
       this.walk()
     }
+
+    this.dust.setSpeedX(-velocityX * 100)
+    this.dust.setSpeedY(-velocityY * 100)
+    this.dust.on = walking
 
     if (!this.anims.isPlaying) {
       this.idle()
@@ -126,16 +150,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
       default:
         this.play('walking-down', true)
     }
-
-    const xOffset = this.flipX ? 5 : -5
-    if (!this.dust1.anims.isPlaying) {
-      this.dust1.setPosition(this.x + xOffset, this.y + 15)
-      this.dust1.play('dustin', true)
-    }
-    if (!this.dust2.anims.isPlaying) {
-      this.dust2.setPosition(this.x + xOffset, this.y + 15)
-      this.dust2.playAfterDelay('dustin', 50)
-    }
   }
 
   slash () {
@@ -156,6 +170,20 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
+  die () {
+    if (this.alive) {
+      this.alive = false
+      this.play('die')
+    }
+  }
+
+  revive () {
+    if (!this.alive) {
+      this.alive = true
+      this.play('revive')
+    }
+  }
+
   /**
    * @param {int} frameRate
    */
@@ -171,8 +199,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this._createAnimation('slash-up', 'player', 48, 51, frameRate, 0)
     this._createAnimation('die', 'player', 54, 56, frameRate, 0)
     this._createAnimation('revive', 'player', 56, 54, frameRate, 0)
-    this._createAnimation('dustin', 'dust', 0, 3, frameRate * 3, 0, this.dust1)
-    this._createAnimation('dustin', 'dust', 0, 3, frameRate * 3, 0, this.dust2)
+    this._createAnimation('dustin', 'dust', 0, 3, frameRate * 4, 0)
   }
 
   _createAnimation (key, spritesheet, startFrame, endFrame, frameRate = 8, repeat = -1, sprite = this) {

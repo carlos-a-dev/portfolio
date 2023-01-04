@@ -1,5 +1,5 @@
 <template>
-  <q-page id="game" class="q-pa-0 q-ma-0">
+  <q-page id="game">
   </q-page>
 </template>
 
@@ -7,6 +7,6 @@
 import { onMounted } from 'vue'
 import Game from 'src/game/main'
 onMounted(() => {
-  Game.init('game', 4)
+  Game.init('game')
 })
 </script>
