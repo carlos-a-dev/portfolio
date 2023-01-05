@@ -24,6 +24,10 @@ class Level1 extends Scene {
     this.load.image('grass', '/game/sprites/tilesets/grass.png')
     this.load.image('water', '/game/sprites/tilesets/water.png')
     this.load.image('objects', '/game/sprites/objects/objects.png')
+    this.load.spritesheet('dust', '/game/sprites/particles/dust_particles_01.png', {
+      frameWidth: 12,
+      frameHeight: 12
+    })
 
     this.load.scenePlugin('AnimatedTiles', '/game/plugins/AnimatedTiles.js', 'animatedTiles', 'animatedTiles')
 
