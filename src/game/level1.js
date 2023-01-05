@@ -42,6 +42,8 @@ class Level1 extends Scene {
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
     this.cameras.main.startFollow(this.player, true)
     this.cameras.main.setZoom(4)
+
+    this.physics.add.collider(this.player, this.chest)
   }
 
   update () {

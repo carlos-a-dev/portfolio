@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 
-export default class Chest extends Phaser.GameObjects.Sprite {
+export default class Chest extends Phaser.Physics.Arcade.Sprite {
   /**
    * @param {Phaser.Scene} scene
    * @param {int} x
@@ -11,6 +11,8 @@ export default class Chest extends Phaser.GameObjects.Sprite {
   constructor (scene, x, y, texture = 'chest-silver', frame = 0) {
     super(scene, x, y, texture, frame)
     scene.add.existing(this)
+    scene.physics.add.existing(this)
+    this.setImmovable(true)
     this._generateAnimations(8)
   }
 

@@ -30,6 +30,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.lastDirection = 'down'
     this.alive = true
+    this.setBodySize(16, 22)
+    this.setOffset(16, 20)
 
     this.idle()
 
@@ -63,10 +65,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
    * @param {Phaser.Types.Input.Keyboard.CursorKeys} cursors
    */
   update (cursors) {
+    this.setVelocity(0, 0)
     if (!this.alive) {
       return
     }
-    this.setVelocity(0, 0)
     if (this.anims.isPlaying && this.anims.currentAnim.key.startsWith('slash-')) {
       return
     }
@@ -173,6 +175,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   die () {
     if (this.alive) {
       this.alive = false
+      this.walking = false
+      this.dust.on = false
       this.play('die')
     }
   }

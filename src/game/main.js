@@ -23,6 +23,10 @@ function init (containerId) {
 
   const game = new Phaser.Game(config)
   game.scene.start('Level1')
+
+  window.addEventListener('resize', () => {
+    game.scale.resize(container.clientWidth, container.clientHeight)
+  })
 }
 
 export default {
