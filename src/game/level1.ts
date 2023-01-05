@@ -1,6 +1,8 @@
 import Phaser, { Scene } from 'phaser'
 import Player from './characters/player'
+import Skeleton from './characters/skeleton'
 import Chest from './objects/chest'
+import { Direction } from './Walkable'
 
 class Level1 extends Scene {
   cursors!: Phaser.Types.Input.Keyboard.CursorKeys
@@ -9,6 +11,7 @@ class Level1 extends Scene {
   chest!: Chest
   player!: Player
   myLight!: Phaser.GameObjects.Light
+  skeleton!: Skeleton
 
   constructor (config: string | Phaser.Types.Scenes.SettingsConfig) {
     super(config)
@@ -31,6 +34,7 @@ class Level1 extends Scene {
 
     this.load.scenePlugin('AnimatedTiles', '/game/plugins/AnimatedTiles.js', 'animatedTiles', 'animatedTiles')
 
+    Skeleton.preload(this)
     Player.preload(this)
     Chest.preload(this)
   }
@@ -54,6 +58,9 @@ class Level1 extends Scene {
     this.chest = new Chest(this, 200, 150)
     this.player = new Player(this, map.widthInPixels / 2, map.heightInPixels / 2)
     this.player.setPipeline('Light2D')
+    this.skeleton = new Skeleton(this, this.player.x, this.player.y + 30)
+
+    this.skeleton.walkable?.walk(Direction.left, 50)
 
     this.myLight = this.lights.addLight(0, 0, 70)
     this.lights.enable().setAmbientColor(0x777777)

@@ -6,8 +6,8 @@ export default class Player extends BaseSprite {
   constructor (scene:Phaser.Scene, x:number, y:number, texture = 'player', frame = 0) {
     super(scene, x, y, texture, frame)
 
-    this.setBodySize(16, 22)
-    this.setOffset(16, 20)
+    this.setBodySize(13, 20)
+    this.setOffset(18, 22)
 
     this.walkable?.idle(this.lastDirection)
   }
