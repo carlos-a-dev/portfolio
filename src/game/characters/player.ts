@@ -2,15 +2,11 @@ import Phaser from 'phaser'
 import AnimatedParticle from 'src/game/particles/AnimatedParticle'
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
-  /**
-   *
-   * @param {Phaser.Scene} scene
-   * @param {int} x
-   * @param {int} y
-   * @param {string} texture
-   * @param {int} frame
-   */
-  constructor (scene, x, y, texture = 'player', frame = 0) {
+  dust: Phaser.GameObjects.Particles.ParticleEmitter
+  lastDirection: string
+  alive: boolean
+  walking!: boolean
+  constructor (scene:Phaser.Scene, x:number, y:number, texture = 'player', frame = 0) {
     super(scene, x, y, texture, frame)
 
     this._generateAnimations(8)
@@ -21,9 +17,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       lifespan: 150,
       follow: this,
       followOffset: new Phaser.Math.Vector2(0, 16),
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore: There was no other way
       particleClass: AnimatedParticle
     })
-    this.dust.animation = this.anims.get('dustin')
+    Object.defineProperty(this.dust, 'animation', { value: this.anims.get('dustin') })
 
     scene.add.existing(this)
     scene.physics.add.existing(this)
@@ -47,10 +45,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     })
   }
 
-  /**
-   * @param {Phaser.Scene} scene
-   */
-  static preload (scene) {
+  static preload (scene:Phaser.Scene) {
     scene.load.spritesheet('player', '/game/sprites/characters/player.png', {
       frameWidth: 48,
       frameHeight: 48
@@ -61,10 +56,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     })
   }
 
-  /**
-   * @param {Phaser.Types.Input.Keyboard.CursorKeys} cursors
-   */
-  update (cursors) {
+  update (cursors:Phaser.Types.Input.Keyboard.CursorKeys) {
     this.setVelocity(0, 0)
     if (!this.alive) {
       return
@@ -206,7 +198,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this._createAnimation('dustin', 'dust', 0, 3, frameRate * 4, 0)
   }
 
-  _createAnimation (key, spritesheet, startFrame, endFrame, frameRate = 8, repeat = -1, sprite = this) {
+  _createAnimation (key:string, spritesheet:string, startFrame:number, endFrame:number, frameRate = 8, repeat = -1, sprite = this) {
     sprite.anims.create({
       key,
       frames: this.anims.generateFrameNumbers(spritesheet, { start: startFrame, end: endFrame }),

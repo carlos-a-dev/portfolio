@@ -40,7 +40,10 @@ class Level1 extends Scene {
     map.createLayer('water', ['water']).setPipeline('Light2D')
     map.createLayer('island', ['grass', 'water']).setPipeline('Light2D')
     map.createLayer('trees', ['objects']).setPipeline('Light2D')
-    // this.sys.animatedTiles.init(map)
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore: There was no other way
+    this.sys.animatedTiles.init(map)
 
     this.cursors = this.input.keyboard.createCursorKeys()
 

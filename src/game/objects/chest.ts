@@ -8,7 +8,7 @@ export default class Chest extends Phaser.Physics.Arcade.Sprite {
    * @param {string} texture
    * @param {int} frame
    */
-  constructor (scene, x, y, texture = 'chest-silver', frame = 0) {
+  constructor (scene: Phaser.Scene, x: number, y: number, texture: string | Phaser.Textures.Texture = 'chest-silver', frame: string | number = 0) {
     super(scene, x, y, texture, frame)
     scene.add.existing(this)
     scene.physics.add.existing(this)
@@ -19,7 +19,7 @@ export default class Chest extends Phaser.Physics.Arcade.Sprite {
   /**
    * @param {Phaser.Scene} scene
    */
-  static preload (scene) {
+  static preload (scene: Phaser.Scene) {
     scene.load.spritesheet('chest-silver', '/game/sprites/objects/chest_01.png', {
       frameWidth: 16,
       frameHeight: 16
@@ -45,7 +45,7 @@ export default class Chest extends Phaser.Physics.Arcade.Sprite {
     this._createAnimation('open', this.texture.key, 0, 3, frameRate)
   }
 
-  _createAnimation (key, spritesheet, startFrame, endFrame, frameRate = 8, repeat = 0, sprite = this) {
+  _createAnimation (key:string, spritesheet:string, startFrame:number, endFrame:number, frameRate = 8, repeat = -1, sprite = this) {
     sprite.anims.create({
       key,
       frames: this.anims.generateFrameNumbers(spritesheet, { start: startFrame, end: endFrame }),
